@@ -1,0 +1,4 @@
+#ifndef CUTTINGSCENE_H
+#define CUTTINGSCENE_H
+
+#endif // CUTTINGSCENE_H
