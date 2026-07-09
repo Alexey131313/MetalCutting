@@ -28,8 +28,17 @@ MaxRectsAlgorithm::calculate(
         PartExpander::expand(
             request.parts);
 
-    PartSorter::sortByArea(
-        parts);
+    std::sort(
+        parts.begin(),
+        parts.end(),
+        [](const ExpandedPart& a,
+           const ExpandedPart& b)
+        {
+            return
+                std::max(a.width, a.height)
+                >
+                std::max(b.width, b.height);
+        });
 
     for (const auto& part : parts)
     {
@@ -37,8 +46,7 @@ MaxRectsAlgorithm::calculate(
 
         auto placement =
             findBestPosition(
-                part,
-                freeRectIndex);
+                part);
 
         if (!placement.has_value())
         {
@@ -59,6 +67,10 @@ MaxRectsAlgorithm::calculate(
             placement.value());
 
         pruneFreeRectangles();
+
+        removeZeroRectangles();
+
+        mergeFreeRectangles();
     }
 
     const double sheetArea =
@@ -74,105 +86,90 @@ MaxRectsAlgorithm::calculate(
 
 std::optional<Placement>
 MaxRectsAlgorithm::findBestPosition(
-    const ExpandedPart& part,
-    int& freeRectIndex)
+    const ExpandedPart& part)
 {
-    double bestScore =
+    double bestAreaFit =
+        std::numeric_limits<double>::max();
+
+    double bestShortSideFit =
         std::numeric_limits<double>::max();
 
     std::optional<Placement>
         bestPlacement;
 
-    freeRectIndex = -1;
-
-    for (size_t i = 0;
-         i < freeRectangles_.size();
-         ++i)
+    for (const auto& freeRect :
+         freeRectangles_)
     {
         const auto& r =
-            freeRectangles_[i].rect;
+            freeRect.rect;
 
-        bool normalFits =
-            part.width <= r.width &&
-            part.height <= r.height;
-
-        bool rotatedFits =
-            part.allowRotation &&
-            part.height <= r.width &&
-            part.width <= r.height;
-
-        if (!normalFits &&
-            !rotatedFits)
+        auto evaluate =
+            [&](double width,
+                double height,
+                bool rotated)
         {
-            continue;
-        }
-
-        if (normalFits)
-        {
-            double waste =
-                r.width * r.height -
-                part.width * part.height;
-
-            if (waste < bestScore)
+            if (width > r.width ||
+                height > r.height)
             {
-                bestScore =
-                    waste;
+                return;
+            }
 
-                freeRectIndex =
-                    static_cast<int>(i);
+            double areaFit =
+                r.width * r.height -
+                width * height;
 
-                Placement p;
+            double shortSideFit =
+                std::min(
+                    r.width - width,
+                    r.height - height);
 
-                p.partId =
+            if (
+                areaFit < bestAreaFit ||
+                (
+                    areaFit == bestAreaFit &&
+                    shortSideFit <
+                        bestShortSideFit
+                    )
+                )
+            {
+                bestAreaFit =
+                    areaFit;
+
+                bestShortSideFit =
+                    shortSideFit;
+
+                Placement placement;
+
+                placement.partId =
                     part.partId;
 
-                p.rotated =
-                    false;
+                placement.rotated =
+                    rotated;
 
-                p.rect =
+                placement.rect =
                     {
                         r.x,
                         r.y,
-                        part.width,
-                        part.height
+                        width,
+                        height
                     };
 
-                bestPlacement = p;
+                bestPlacement =
+                    placement;
             }
-        }
+        };
 
-        if (rotatedFits)
+        evaluate(
+            part.width,
+            part.height,
+            false);
+
+        if (part.allowRotation)
         {
-            double waste =
-                r.width * r.height -
-                part.width * part.height;
-
-            if (waste < bestScore)
-            {
-                bestScore =
-                    waste;
-
-                freeRectIndex =
-                    static_cast<int>(i);
-
-                Placement p;
-
-                p.partId =
-                    part.partId;
-
-                p.rotated =
-                    true;
-
-                p.rect =
-                    {
-                        r.x,
-                        r.y,
-                        part.height,
-                        part.width
-                    };
-
-                bestPlacement = p;
-            }
+            evaluate(
+                part.height,
+                part.width,
+                true);
         }
     }
 
@@ -309,6 +306,158 @@ void MaxRectsAlgorithm::pruneFreeRectangles()
             ++j;
         }
     }
+
+    std::sort(
+        freeRectangles_.begin(),
+        freeRectangles_.end(),
+        [](const FreeRectangle& a,
+           const FreeRectangle& b)
+        {
+            if (a.rect.x != b.rect.x)
+                return a.rect.x < b.rect.x;
+
+            if (a.rect.y != b.rect.y)
+                return a.rect.y < b.rect.y;
+
+            if (a.rect.width != b.rect.width)
+                return a.rect.width < b.rect.width;
+
+            return a.rect.height < b.rect.height;
+        });
+
+    freeRectangles_.erase(
+        std::unique(
+            freeRectangles_.begin(),
+            freeRectangles_.end(),
+            [](const FreeRectangle& a,
+               const FreeRectangle& b)
+            {
+                return
+                    a.rect.x == b.rect.x &&
+                    a.rect.y == b.rect.y &&
+                    a.rect.width == b.rect.width &&
+                    a.rect.height == b.rect.height;
+            }),
+        freeRectangles_.end());
+}
+
+void MaxRectsAlgorithm::removeZeroRectangles()
+{
+    freeRectangles_.erase(
+        std::remove_if(
+            freeRectangles_.begin(),
+            freeRectangles_.end(),
+            [](const FreeRectangle& r)
+            {
+                return
+                    r.rect.width <= 0 ||
+                    r.rect.height <= 0;
+            }),
+        freeRectangles_.end());
+}
+
+void MaxRectsAlgorithm::mergeFreeRectangles()
+{
+    bool merged;
+
+    do
+    {
+        merged = false;
+
+        for (size_t i = 0;
+             i < freeRectangles_.size();
+             ++i)
+        {
+            for (size_t j = i + 1;
+                 j < freeRectangles_.size();
+                 ++j)
+            {
+                auto& a =
+                    freeRectangles_[i].rect;
+
+                auto& b =
+                    freeRectangles_[j].rect;
+
+                bool horizontalMerge =
+                    a.y == b.y &&
+                    a.height == b.height &&
+                    (
+                        a.x + a.width == b.x ||
+                        b.x + b.width == a.x
+                        );
+
+                if (horizontalMerge)
+                {
+                    Rectangle mergedRect;
+
+                    mergedRect.x =
+                        std::min(a.x, b.x);
+
+                    mergedRect.y =
+                        a.y;
+
+                    mergedRect.width =
+                        a.width + b.width;
+
+                    mergedRect.height =
+                        a.height;
+
+                    freeRectangles_[i].rect =
+                        mergedRect;
+
+                    freeRectangles_.erase(
+                        freeRectangles_.begin()
+                        + j);
+
+                    merged = true;
+
+                    break;
+                }
+
+                bool verticalMerge =
+                    a.x == b.x &&
+                    a.width == b.width &&
+                    (
+                        a.y + a.height == b.y ||
+                        b.y + b.height == a.y
+                        );
+
+                if (verticalMerge)
+                {
+                    Rectangle mergedRect;
+
+                    mergedRect.x =
+                        a.x;
+
+                    mergedRect.y =
+                        std::min(a.y, b.y);
+
+                    mergedRect.width =
+                        a.width;
+
+                    mergedRect.height =
+                        a.height + b.height;
+
+                    freeRectangles_[i].rect =
+                        mergedRect;
+
+                    freeRectangles_.erase(
+                        freeRectangles_.begin()
+                        + j);
+
+                    merged = true;
+
+                    break;
+                }
+            }
+
+            if (merged)
+            {
+                break;
+            }
+        }
+
+    } while (merged);
 }
 
 bool MaxRectsAlgorithm::intersects(

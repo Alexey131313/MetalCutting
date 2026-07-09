@@ -20,13 +20,16 @@ private:
 
     std::optional<Placement>
     findBestPosition(
-        const ExpandedPart& part,
-        int& freeRectIndex);
+        const ExpandedPart& part);
 
     void splitFreeRectangles(
         const Placement& placement);
 
     void pruneFreeRectangles();
+
+    void removeZeroRectangles();
+
+    void mergeFreeRectangles();
 
     bool intersects(
         const Rectangle& a,
