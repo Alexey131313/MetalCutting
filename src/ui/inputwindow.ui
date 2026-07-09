@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>InputWindow</class>
+ <widget class="QMainWindow" name="InputWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Раскрой листового материала</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayoutMain">
+    <item>
+     <widget class="QLabel" name="labelMainParams">
+      <property name="styleSheet">
+       <string notr="true">
+font-size:18px;
+font-weight:bold;
+       </string>
+      </property>
+      <property name="text">
+       <string>Параметры раскроя</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBoxSheet">
+      <property name="title">
+       <string>Лист</string>
+      </property>
+      <layout class="QFormLayout" name="formLayoutSheet">
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelWidth">
+         <property name="text">
+          <string>Ширина</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QDoubleSpinBox" name="sheetWidthSpinBox">
+         <property name="maximum">
+          <double>100000.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>286.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="labelHeight">
+         <property name="text">
+          <string>Высота</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QDoubleSpinBox" name="sheetHeightSpinBox">
+         <property name="maximum">
+          <double>100000.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>300.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBoxAlgorithm">
+      <property name="title">
+       <string>Алгоритм</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayoutAlgorithm">
+       <item>
+        <widget class="QComboBox" name="algorithmComboBox">
+         <item>
+          <property name="text">
+           <string>Greedy</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Guillotine</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>MaxRects BAF</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBoxParts">
+      <property name="title">
+       <string>Детали</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayoutParts">
+       <item>
+        <widget class="QTableWidget" name="partsTable">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+         </property>
+         <column>
+          <property name="text">
+           <string>ID</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Width</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Height</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Quantity</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Rotation</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayoutButtons">
+         <item>
+          <widget class="QPushButton" name="addPartButton">
+           <property name="text">
+            <string>Добавить</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="removePartButton">
+           <property name="text">
+            <string>Удалить</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="calculateButton">
+      <property name="text">
+       <string>Рассчитать</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>900</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

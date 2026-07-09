@@ -5,11 +5,10 @@
 #include <stdexcept>
 
 CuttingResult
-CuttingService::execute(
-    const CuttingRequest& request)
+CuttingService::execute(const CuttingRequest& request, AlgorithmType algorithmType)
 {
     auto algorithm =
-        AlgorithmFactory::create(AlgorithmType::MaxRects);
+        AlgorithmFactory::create(algorithmType);
 
     auto result =
         algorithm->calculate(request);

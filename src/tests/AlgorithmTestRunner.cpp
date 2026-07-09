@@ -24,8 +24,7 @@ bool AlgorithmTestRunner::runAll()
         try
         {
             auto result =
-                service.execute(
-                    test.request);
+                service.execute(test.request, test.algorithm);
 
             bool ok =
                 result.producedCount ==

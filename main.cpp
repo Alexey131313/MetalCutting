@@ -1,5 +1,5 @@
 #include <QApplication>
-#include "ui/mainwindow.h"
+#include "ui/inputwindow.h"
 #include "tests/AlgorithmTestRunner.h"
 
 #define RUN_TESTS 0
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     #else
 
-        MainWindow window;
+        InputWindow window;
 
         window.show();
 

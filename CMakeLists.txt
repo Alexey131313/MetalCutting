@@ -21,6 +21,9 @@ set(UI_SOURCES
     src/ui/MainWindow.cpp
     src/ui/MainWindow.h
     src/ui/MainWindow.ui
+    src/ui/inputwindow.h
+    src/ui/inputwindow.cpp
+    src/ui/inputwindow.ui
     src/ui/graphics/CuttingScene.h
     src/ui/graphics/CuttingRenderer.h
     src/ui/graphics/CuttingRenderer.cpp

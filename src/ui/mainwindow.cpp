@@ -7,7 +7,7 @@
 #include <QShowEvent>
 #include <QMessageBox>
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(const CuttingRequest& request, AlgorithmType algorithm, QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
@@ -19,26 +19,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphicsView->setScene(
         scene_);
 
-    CuttingRequest request;
-
-    request.sheet =
-        {
-            600,
-            400
-        };
-
-    request.parts =
-        {
-            {1, 200, 200, 2, true},
-            {2, 100, 100, 8, true}
-        };
-
     CuttingService service;
 
     try{
         auto result =
             service.execute(
-                request);
+                request,
+                algorithm);
         CuttingRenderer::render(
             scene_,
             request.sheet,
@@ -47,6 +34,21 @@ MainWindow::MainWindow(QWidget *parent)
         ui->graphicsView->fitInView(
             scene_->sceneRect(),
             Qt::KeepAspectRatio);
+
+        double utilization =
+            result.usedArea /
+            (
+                request.sheet.width *
+                request.sheet.height
+                ) * 100.0;
+
+        setWindowTitle(
+            QString(
+                "Produced: %1 | Unproduced: %2 | Utilization: %3%")
+                .arg(result.producedCount)
+                .arg(result.unproducedCount)
+                .arg(utilization,0,'f',2));
+
     } catch (const std::exception& e) {
         scene_->clear();
         QMessageBox::critical(
