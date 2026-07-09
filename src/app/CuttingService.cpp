@@ -9,8 +9,7 @@ CuttingService::execute(
     const CuttingRequest& request)
 {
     auto algorithm =
-        AlgorithmFactory::create(
-            AlgorithmType::Greedy);
+        AlgorithmFactory::create(AlgorithmType::MaxRects);
 
     auto result =
         algorithm->calculate(request);

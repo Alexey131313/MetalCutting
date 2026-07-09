@@ -3,6 +3,7 @@
 enum class AlgorithmType
 {
     Greedy,
+    Guillotine,
     MaxRects
 };
 

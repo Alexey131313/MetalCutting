@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    resize(1000, 800);
+    resize(1220, 840);
     scene_ =
         new QGraphicsScene(this);
 
@@ -23,14 +23,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     request.sheet =
         {
-            286,
-            300
+            600,
+            400
         };
 
     request.parts =
         {
-            {1,286,150,1,true},
-            {2,150,136,1,true}
+            {1, 200, 200, 2, true},
+            {2, 100, 100, 8, true}
         };
 
     CuttingService service;

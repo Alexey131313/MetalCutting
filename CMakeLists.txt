@@ -46,6 +46,10 @@ set(DOMAIN_SOURCES
     src/domain/algorithms/PartSorter.h
     src/domain/algorithms/PartExpander.cpp
     src/domain/algorithms/PartSorter.cpp
+    src/domain/algorithms/GuillotineAlgorithm.h
+    src/domain/algorithms/GuillotineAlgorithm.cpp
+    src/domain/algorithms/MaxRectsAlgorithm.h
+    src/domain/algorithms/MaxRectsAlgorithm.cpp
 )
 
 set(APPLICATION_SOURCES
@@ -60,6 +64,14 @@ set(INFRASTRUCTURE_SOURCES
     src/app/CuttingValidator.cpp
 )
 
+set(TESTS_SOURCES
+    src/tests/AlgorithmTestRunner.h
+    src/tests/AlgorithmTestRunner.cpp
+    src/tests/TestScenarios.h
+    src/tests/TestScenarios.cpp
+    src/tests/TestScenario.h
+)
+
 qt_add_executable(MetalCutting
     WIN32
     MACOSX_BUNDLE
@@ -70,6 +82,7 @@ qt_add_executable(MetalCutting
     ${DOMAIN_SOURCES}
     ${APPLICATION_SOURCES}
     ${INFRASTRUCTURE_SOURCES}
+    ${TESTS_SOURCES}
 )
 
 qt_add_translations(

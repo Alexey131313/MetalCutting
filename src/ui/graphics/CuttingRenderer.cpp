@@ -16,21 +16,19 @@ void CuttingRenderer::render(
 
     scene->setSceneRect(-margin, -margin, sheet.width + margin * 2, sheet.height + margin * 2);
 
-    for (int x = 0; x <= sheet.width; x += 10)
-    {
-        scene->addLine(x, 0, x, sheet.height, QPen(Qt::lightGray));
-    }
-    for (int y = 0; y <= sheet.height; y += 10)
-    {
-        scene->addLine(0, y, sheet.width, y, QPen(Qt::lightGray));
-    }
+    QPen borderPen(Qt::black, 2);
+    borderPen.setCosmetic(true);
+    scene->addRect(0, 0, sheet.width, sheet.height, borderPen, Qt::NoBrush);
 
-    scene->addRect(
-        0,
-        0,
-        sheet.width,
-        sheet.height,
-        QPen(Qt::black, 2));
+    QPen gridPen(Qt::lightGray);
+    gridPen.setWidth(0);
+    gridPen.setCosmetic(true);
+    for (int x = 0; x <= sheet.width; x += 10) {
+        scene->addLine(x + 0.5, 0, x + 0.5, sheet.height, gridPen);
+    }
+    for (int y = 0; y <= sheet.height; y += 10) {
+        scene->addLine(0, y + 0.5, sheet.width, y + 0.5, gridPen);
+    }
 
     auto sheetText =
         scene->addText(
