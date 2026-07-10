@@ -8,18 +8,11 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     #if RUN_TESTS
-
         AlgorithmTestRunner::runAll();
-
         return 0;
-
     #else
-
         InputWindow window;
-
         window.show();
-
         return app.exec();
-
     #endif
 }
