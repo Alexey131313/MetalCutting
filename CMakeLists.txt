@@ -69,10 +69,6 @@ set(INFRASTRUCTURE_SOURCES
 
 set(TESTS_SOURCES
 
-
-
-
-    src/tests/TestScenario.h
 )
 
 qt_add_executable(MetalCutting
