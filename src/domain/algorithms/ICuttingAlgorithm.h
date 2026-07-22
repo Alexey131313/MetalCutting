@@ -6,9 +6,6 @@
 class ICuttingAlgorithm
 {
 public:
-
     virtual ~ICuttingAlgorithm() = default;
-
-    virtual CuttingResult calculate(
-        const CuttingRequest& request) = 0;
+    virtual CuttingResult calculate(const CuttingRequest& request) = 0;
 };

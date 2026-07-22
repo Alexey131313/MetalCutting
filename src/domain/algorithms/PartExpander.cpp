@@ -18,6 +18,5 @@ PartExpander::expand(const std::vector<Part>& parts)
                 });
         }
     }
-
     return result;
 }

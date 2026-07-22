@@ -24,10 +24,10 @@ set(UI_SOURCES
     src/ui/inputwindow.h
     src/ui/inputwindow.cpp
     src/ui/inputwindow.ui
-    src/ui/graphics/CuttingScene.h
+
     src/ui/graphics/CuttingRenderer.h
     src/ui/graphics/CuttingRenderer.cpp
-    src/ui/graphics/CuttingScene.cpp
+
 )
 
 set(DOMAIN_SOURCES
@@ -68,10 +68,10 @@ set(INFRASTRUCTURE_SOURCES
 )
 
 set(TESTS_SOURCES
-    src/tests/AlgorithmTestRunner.h
-    src/tests/AlgorithmTestRunner.cpp
-    src/tests/TestScenarios.h
-    src/tests/TestScenarios.cpp
+
+
+
+
     src/tests/TestScenario.h
 )
 

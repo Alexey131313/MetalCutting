@@ -1,12 +1,9 @@
 #include "AlgorithmFactory.h"
-
 #include "../domain/algorithms/GreedyAlgorithm.h"
 #include "../domain/algorithms/GuillotineAlgorithm.h"
 #include "../domain/algorithms/MaxRectsAlgorithm.h"
 
-std::unique_ptr<ICuttingAlgorithm>
-AlgorithmFactory::create(
-    AlgorithmType type)
+std::unique_ptr<ICuttingAlgorithm> AlgorithmFactory::create(AlgorithmType type)
 {
     switch (type)
     {

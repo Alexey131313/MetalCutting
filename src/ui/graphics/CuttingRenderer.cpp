@@ -17,10 +17,12 @@ void CuttingRenderer::render(QGraphicsScene* scene, const Sheet& sheet, const Cu
     QPen gridPen(Qt::lightGray);
     gridPen.setWidth(0);
     gridPen.setCosmetic(true);
-    for (int x = 0; x <= sheet.width; x += 10) {
+    for (int x = 0; x <= sheet.width; x += 10)
+    {
         scene->addLine(x + 0.5, 0, x + 0.5, sheet.height, gridPen);
     }
-    for (int y = 0; y <= sheet.height; y += 10) {
+    for (int y = 0; y <= sheet.height; y += 10)
+    {
         scene->addLine(0, y + 0.5, sheet.width, y + 0.5, gridPen);
     }
 

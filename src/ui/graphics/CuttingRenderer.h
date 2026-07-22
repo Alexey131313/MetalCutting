@@ -1,5 +1,4 @@
 #pragma once
-
 #include <QGraphicsScene>
 #include "../../domain/results/CuttingResult.h"
 #include "../../domain/entities/Sheet.h"

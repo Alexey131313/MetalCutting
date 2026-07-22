@@ -1,24 +1,15 @@
 #include "GreedyAlgorithm.h"
-
 #include "../entities/ExpandedPart.h"
 #include "../entities/FreeRectangle.h"
-
 #include "PartExpander.h"
 #include "PartSorter.h"
-
 #include <vector>
 
-CuttingResult GreedyAlgorithm::calculate(
-    const CuttingRequest& request)
+CuttingResult GreedyAlgorithm::calculate(const CuttingRequest& request)
 {
     CuttingResult result;
-
-    auto parts =
-        PartExpander::expand(
-            request.parts);
-
+    auto parts = PartExpander::expand(request.parts);
     PartSorter::sortByArea(parts);
-
     std::vector<FreeRectangle> freeRectangles;
 
     freeRectangles.push_back(
@@ -34,29 +25,14 @@ CuttingResult GreedyAlgorithm::calculate(
     for (const auto& part : parts)
     {
         bool placed = false;
-
-        for (size_t i = 0;
-             i < freeRectangles.size();
-             ++i)
+        for (size_t i = 0; i < freeRectangles.size(); ++i)
         {
-            auto& freeRect =
-                freeRectangles[i];
-
-            auto r =
-                freeRect.rect;
-
-            bool normalFits =
-                part.width <= r.width &&
-                part.height <= r.height;
-
-            bool rotatedFits =
-                part.allowRotation &&
-                part.height <= r.width &&
-                part.width <= r.height;
-
+            auto& freeRect = freeRectangles[i];
+            auto r = freeRect.rect;
+            bool normalFits = part.width <= r.width && part.height <= r.height;
+            bool rotatedFits = part.allowRotation && part.height <= r.width && part.width <= r.height;
             if (!normalFits && !rotatedFits)
                 continue;
-
             double placedWidth;
             double placedHeight;
             bool rotated;
@@ -65,23 +41,17 @@ CuttingResult GreedyAlgorithm::calculate(
             {
                 placedWidth = part.width;
                 placedHeight = part.height;
-
                 rotated = false;
             } else
             {
                 placedWidth = part.height;
                 placedHeight = part.width;
-
                 rotated = true;
             }
 
             Placement placement;
-
-            placement.partId =
-                part.partId;
-
+            placement.partId = part.partId;
             placement.rotated = rotated;
-
             placement.rect =
                 {
                     r.x,
@@ -90,34 +60,16 @@ CuttingResult GreedyAlgorithm::calculate(
                     placedHeight
                 };
 
-            result.placements
-                .push_back(placement);
-
+            result.placements.push_back(placement);
             result.producedCount++;
+            result.usedArea += part.width * part.height;
+            double rightWidth = r.width - placedWidth;
+            double rightHeight = placedHeight;
+            double bottomWidth = r.width;
+            double bottomHeight = r.height - placedHeight;
+            freeRectangles.erase(freeRectangles.begin() + i);
 
-            result.usedArea +=
-                part.width *
-                part.height;
-
-            double rightWidth =
-                r.width -
-                placedWidth;
-
-            double rightHeight =
-                placedHeight;
-
-            double bottomWidth =
-                r.width;
-
-            double bottomHeight =
-                r.height -
-                placedHeight;
-
-            freeRectangles.erase(
-                freeRectangles.begin() + i);
-
-            if (rightWidth > 0 &&
-                rightHeight > 0)
+            if (rightWidth > 0 && rightHeight > 0)
             {
                 freeRectangles.push_back(
                     {
@@ -130,8 +82,7 @@ CuttingResult GreedyAlgorithm::calculate(
                     });
             }
 
-            if (bottomWidth > 0 &&
-                bottomHeight > 0)
+            if (bottomWidth > 0 && bottomHeight > 0)
             {
                 freeRectangles.push_back(
                     {
@@ -143,20 +94,15 @@ CuttingResult GreedyAlgorithm::calculate(
                         }
                     });
             }
-
             placed = true;
-
             break;
         }
-
         if (!placed)
         {
             result.unproducedCount++;
         }
     }
-
     const double sheetArea = request.sheet.width * request.sheet.height;
     result.wasteArea = sheetArea - result.usedArea;
-
     return result;
 }

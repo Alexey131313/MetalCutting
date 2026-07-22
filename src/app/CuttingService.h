@@ -7,7 +7,5 @@
 class CuttingService
 {
 public:
-
-    CuttingResult execute(
-        const CuttingRequest& request, AlgorithmType algorithmType);
+    CuttingResult execute(const CuttingRequest& request, AlgorithmType algorithmType);
 };

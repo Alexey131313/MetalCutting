@@ -1,5 +1,4 @@
 #include "PartSorter.h"
-
 #include <algorithm>
 
 void PartSorter::sortByArea(

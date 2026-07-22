@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
 #include <QGraphicsScene>
 #include "../app/CuttingService.h"
 #include "graphics/CuttingRenderer.h"

@@ -5,7 +5,6 @@
 class PartExpander
 {
 public:
-
     static std::vector<ExpandedPart>
     expand(const std::vector<Part>& parts);
 };

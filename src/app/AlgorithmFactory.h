@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include "../domain/algorithms/ICuttingAlgorithm.h"
+
 enum class AlgorithmType
 {
     Greedy,
@@ -7,16 +10,8 @@ enum class AlgorithmType
     MaxRects
 };
 
-#pragma once
-
-#include <memory>
-
-#include "../domain/algorithms/ICuttingAlgorithm.h"
-
 class AlgorithmFactory
 {
 public:
-
-    static std::unique_ptr<ICuttingAlgorithm>
-    create(AlgorithmType type);
+    static std::unique_ptr<ICuttingAlgorithm> create(AlgorithmType type);
 };
