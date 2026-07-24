@@ -30,14 +30,19 @@ void CuttingRenderer::render(QGraphicsScene* scene, const Sheet& sheet, const Cu
     sheetText->setPos(5, 5);
     for (const auto& placement : result.placements)
     {
-        scene->addRect(placement.rect.x, placement.rect.y, placement.rect.width, placement.rect.height, QPen(Qt::blue), QBrush(QColor(200, 220, 255)));
+        QColor colors[]{QColor(220,240,255), QColor(220,255,220), QColor(255,240,220), QColor(255,220,240), QColor(240,240,200)};
+        QColor color = colors[placement.partId % std::size(colors)];
+        scene->addRect(placement.rect.x, placement.rect.y, placement.rect.width, placement.rect.height, QPen(QColor(Qt::black)), QBrush(QColor(color)));
         QString textItem;
         if (placement.rotated) {
-            textItem = QString("%1(R)\n(%2,%3)").arg(placement.partId).arg(placement.rect.x).arg(placement.rect.y);
+            textItem = QString("%1(R)\n(%2,%3)").arg(placement.partId).arg(placement.rect.width).arg(placement.rect.height);
         } else {
-            textItem = QString("%1\n(%2,%3)").arg(placement.partId).arg(placement.rect.x).arg(placement.rect.y);
+            textItem = QString("%1\n(%2,%3)").arg(placement.partId).arg(placement.rect.width).arg(placement.rect.height);
         }
         auto text = scene->addText(textItem);
-        text->setPos(placement.rect.x + 5, placement.rect.y + 5);
+        text->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        QRectF rect(placement.rect.x, placement.rect.y, placement.rect.width, placement.rect.height);
+        QRectF textRect = text->boundingRect();
+        text->setPos(rect.center().x() - textRect.width()/2, rect.center().y() - textRect.height()/2);
     }
 }

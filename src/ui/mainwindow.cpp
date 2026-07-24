@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include "inputwindow.h"
 
+
 MainWindow::MainWindow(const CuttingRequest& request, AlgorithmType algorithm, InputWindow* inputWindow, QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), inputWindow_(inputWindow)
 {
@@ -14,6 +15,13 @@ MainWindow::MainWindow(const CuttingRequest& request, AlgorithmType algorithm, I
     resize(1220, 840);
     scene_ = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene_);
+    ui->graphicsView->viewport()->installEventFilter(this);
+
+    ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+    ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    ui->graphicsView->setResizeAnchor(QGraphicsView::AnchorUnderMouse);
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     CuttingService service;
 
@@ -42,6 +50,9 @@ void MainWindow::showEvent(QShowEvent* event)
 {
     QMainWindow::showEvent(event);
     ui->graphicsView->fitInView(scene_->sceneRect(), Qt::KeepAspectRatio);
+    baseScale_ = ui->graphicsView->transform().m11();
+
+    statusBar()->showMessage("Масштаб: 100%");
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
@@ -49,4 +60,36 @@ void MainWindow::closeEvent(QCloseEvent* event)
     if (inputWindow_)
         inputWindow_->show();
     event->accept();
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == ui->graphicsView->viewport() &&
+        event->type() == QEvent::Wheel)
+    {
+        auto *wheel = static_cast<QWheelEvent *>(event);
+        constexpr double zoomFactor = 1.15;
+        constexpr double minScale = 0.2;
+        constexpr double maxScale = 10.0;
+        double currentScale = ui->graphicsView->transform().m11();
+        double relativeScale = currentScale / baseScale_;
+
+        if (wheel->angleDelta().y() > 0)
+        {
+            if (relativeScale < maxScale)
+                ui->graphicsView->scale(zoomFactor, zoomFactor);
+        }
+        else
+        {
+            if (relativeScale > minScale)
+                ui->graphicsView->scale(1.0 / zoomFactor, 1.0 / zoomFactor);
+        }
+
+        currentScale = ui->graphicsView->transform().m11();
+        relativeScale = currentScale / baseScale_;
+        statusBar()->showMessage(QString("Масштаб: %1%").arg(relativeScale * 100.0, 0, 'f', 0));
+        return true;
+    }
+
+    return QMainWindow::eventFilter(obj, event);
 }
