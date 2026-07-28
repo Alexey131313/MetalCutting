@@ -121,27 +121,27 @@ font-weight:bold;
          </property>
          <column>
           <property name="text">
-           <string>ID</string>
+           <string>Идентификатор</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Width</string>
+           <string>Ширина</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Height</string>
+           <string>Высота</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Quantity</string>
+           <string>Количество</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Rotation</string>
+           <string>Поворот?</string>
           </property>
          </column>
         </widget>
